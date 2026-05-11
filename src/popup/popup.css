@@ -1,0 +1,212 @@
+/* Popup styles. Kept tiny and self-contained — no Tailwind in the extension
+   so we don't double-bundle a framework that's already on the website. */
+
+:root {
+  --bh-bg: #ffffff;
+  --bh-fg: #0f172a;
+  --bh-fg-muted: #475569;
+  --bh-fg-subtle: #94a3b8;
+  --bh-accent: #1e1b4b;
+  --bh-accent-soft: #eef2ff;
+  --bh-border: #e2e8f0;
+  --bh-ok: #166534;
+  --bh-ok-soft: #dcfce7;
+  --bh-warn: #b45309;
+  --bh-warn-soft: #fef3c7;
+  --bh-err: #b91c1c;
+  --bh-err-soft: #fee2e2;
+  --bh-radius: 10px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bh-fg);
+  background: var(--bh-bg);
+}
+
+#root {
+  width: 320px;
+}
+
+.bh-popup {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+}
+
+.bh-popup__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--bh-border);
+}
+
+.bh-popup__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--bh-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  flex: 0 0 auto;
+}
+
+.bh-popup__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.bh-popup__subtitle {
+  margin: 0;
+  font-size: 11px;
+  color: var(--bh-fg-subtle);
+}
+
+.bh-popup__main {
+  padding: 14px 16px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+}
+
+.bh-popup__status {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--bh-radius);
+  font-size: 12px;
+  background: var(--bh-accent-soft);
+  color: var(--bh-accent);
+  border: 1px solid transparent;
+}
+
+.bh-popup__status strong {
+  font-weight: 600;
+}
+
+.bh-popup__status--checking {
+  color: var(--bh-fg-muted);
+  background: #f1f5f9;
+}
+
+.bh-popup__status--ok {
+  background: var(--bh-ok-soft);
+  color: var(--bh-ok);
+}
+
+.bh-popup__status--off {
+  background: var(--bh-warn-soft);
+  color: var(--bh-warn);
+}
+
+.bh-popup__status--err {
+  background: var(--bh-err-soft);
+  color: var(--bh-err);
+}
+
+.bh-popup__email {
+  font-size: 11px;
+  color: var(--bh-fg-muted);
+  font-weight: 400;
+}
+
+.bh-popup__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--bh-fg-muted);
+}
+
+.bh-popup__error {
+  margin: 0;
+  font-size: 11px;
+  color: var(--bh-err);
+  background: var(--bh-err-soft);
+  padding: 8px 10px;
+  border-radius: var(--bh-radius);
+  word-break: break-word;
+}
+
+.bh-popup__meta {
+  margin: 0;
+  font-size: 11px;
+  color: var(--bh-fg-subtle);
+}
+
+.bh-popup__meta code {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 11px;
+  color: var(--bh-fg-muted);
+  background: #f1f5f9;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.bh-popup__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.bh-popup__btn {
+  appearance: none;
+  border: 1px solid var(--bh-border);
+  background: #fff;
+  color: var(--bh-fg);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  border-radius: var(--bh-radius);
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 80ms ease;
+}
+
+.bh-popup__btn:hover {
+  background: #f8fafc;
+}
+
+.bh-popup__btn:active {
+  transform: translateY(1px);
+}
+
+.bh-popup__btn:focus-visible {
+  outline: 2px solid var(--bh-accent);
+  outline-offset: 2px;
+}
+
+.bh-popup__btn--primary {
+  background: var(--bh-accent);
+  color: #fff;
+  border-color: var(--bh-accent);
+}
+
+.bh-popup__btn--primary:hover {
+  background: #312e81;
+}
+
+.bh-popup__footer {
+  padding: 8px 16px 12px;
+  font-size: 10px;
+  color: var(--bh-fg-subtle);
+  text-align: right;
+}

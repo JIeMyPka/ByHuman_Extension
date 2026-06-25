@@ -1,81 +1,110 @@
-/* Popup styles. Kept tiny and self-contained — no Tailwind in the extension
-   so we don't double-bundle a framework that's already on the website. */
+/* Popup styles — synced with the web app design system (globals.css).
+   No Tailwind; tokens are hardcoded to match the web's CSS variables. */
 
 :root {
-  --bh-bg: #ffffff;
-  --bh-fg: #0f172a;
-  --bh-fg-muted: #475569;
-  --bh-fg-subtle: #94a3b8;
-  --bh-accent: #1e1b4b;
-  --bh-accent-soft: #eef2ff;
-  --bh-border: #e2e8f0;
-  --bh-ok: #166534;
-  --bh-ok-soft: #dcfce7;
-  --bh-warn: #b45309;
-  --bh-warn-soft: #fef3c7;
-  --bh-err: #b91c1c;
-  --bh-err-soft: #fee2e2;
-  --bh-radius: 10px;
+  /* ── Brand palette (mirrors globals.css) ─────── */
+  --bh-paper:        #fbfbfd;
+  --bh-surface:      #ffffff;
+  --bh-ink:          #0e1130;
+  --bh-ink2:         #2a2e55;
+  --bh-muted:        #6b6f92;
+  --bh-line:         #e4e5ee;
+  --bh-indigo:       #2826b8;
+  --bh-indigo-soft:  #e8e8fb;
+  --bh-lavender:     #b5b8e0;
+  --bh-verified:     #1f8a5b;
+  --bh-verified-soft:#ddf1e6;
+  --bh-amber:        #b8742a;
+  --bh-amber-soft:   #f5e9d7;
+  --bh-coral:        #b83a2a;
+  --bh-coral-soft:   #f5ddd7;
+
+  /* ── Type ────────────────────────────────────── */
+  --bh-sans:  "Manrope", system-ui, -apple-system, sans-serif;
+  --bh-mono:  "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --bh-serif: "Newsreader", Georgia, "Times New Roman", serif;
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+  font-family: var(--bh-sans);
   font-size: 13px;
-  line-height: 1.45;
-  color: var(--bh-fg);
-  background: var(--bh-bg);
+  line-height: 1.5;
+  color: var(--bh-ink);
+  background: var(--bh-paper);
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
-  width: 320px;
+  width: 300px;
 }
+
+/* ── Popup shell ─────────────────────────────────── */
 
 .bh-popup {
   display: flex;
   flex-direction: column;
-  min-height: 240px;
+  min-height: 220px;
 }
+
+/* ── Header / wordmark ───────────────────────────── */
 
 .bh-popup__header {
+  padding: 16px 16px 12px;
+  border-bottom: 2px solid var(--bh-ink);
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid var(--bh-border);
+  flex-direction: column;
+  gap: 4px;
 }
 
-.bh-popup__logo {
+/* [by:human] wordmark */
+.bh-popup__wordmark {
+  font-family: var(--bh-sans);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: var(--bh-accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  flex: 0 0 auto;
+  align-items: baseline;
+  gap: 0;
 }
 
-.bh-popup__title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+.bh-popup__wm-bracket {
+  color: var(--bh-muted);
+  font-weight: 400;
+  font-size: 1em;
+}
+
+.bh-popup__wm-by {
+  color: var(--bh-indigo);
+  font-style: italic;
+  font-weight: 400;
+  font-family: var(--bh-serif);
+  font-size: 1.05em;
+  margin: 0 1px;
+}
+
+.bh-popup__wm-colon {
+  color: var(--bh-muted);
+  font-weight: 400;
+  margin: 0 1px;
+}
+
+.bh-popup__wm-human {
+  color: var(--bh-ink);
+  font-weight: 800;
 }
 
 .bh-popup__subtitle {
   margin: 0;
-  font-size: 11px;
-  color: var(--bh-fg-subtle);
+  font-family: var(--bh-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--bh-muted);
 }
+
+/* ── Main content ────────────────────────────────── */
 
 .bh-popup__main {
   padding: 14px 16px 4px;
@@ -85,78 +114,81 @@ body {
   flex: 1 1 auto;
 }
 
+/* ── Status pills ────────────────────────────────── */
+
 .bh-popup__status {
   margin: 0;
-  padding: 8px 10px;
-  border-radius: var(--bh-radius);
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 12px;
-  background: var(--bh-accent-soft);
-  color: var(--bh-accent);
+  font-family: var(--bh-mono);
+  background: var(--bh-indigo-soft);
+  color: var(--bh-indigo);
   border: 1px solid transparent;
 }
 
-.bh-popup__status strong {
-  font-weight: 600;
-}
+.bh-popup__status strong { font-weight: 600; }
 
 .bh-popup__status--checking {
-  color: var(--bh-fg-muted);
-  background: #f1f5f9;
+  background: var(--bh-paper);
+  color: var(--bh-muted);
+  border-color: var(--bh-line);
 }
 
 .bh-popup__status--ok {
-  background: var(--bh-ok-soft);
-  color: var(--bh-ok);
+  background: var(--bh-verified-soft);
+  color: var(--bh-verified);
 }
 
 .bh-popup__status--off {
-  background: var(--bh-warn-soft);
-  color: var(--bh-warn);
+  background: var(--bh-amber-soft);
+  color: var(--bh-amber);
 }
 
 .bh-popup__status--err {
-  background: var(--bh-err-soft);
-  color: var(--bh-err);
+  background: var(--bh-coral-soft);
+  color: var(--bh-coral);
 }
 
 .bh-popup__email {
   font-size: 11px;
-  color: var(--bh-fg-muted);
+  color: var(--bh-muted);
   font-weight: 400;
 }
 
 .bh-popup__hint {
   margin: 0;
   font-size: 12px;
-  color: var(--bh-fg-muted);
+  color: var(--bh-muted);
 }
 
 .bh-popup__error {
   margin: 0;
   font-size: 11px;
-  color: var(--bh-err);
-  background: var(--bh-err-soft);
+  font-family: var(--bh-mono);
+  color: var(--bh-coral);
+  background: var(--bh-coral-soft);
   padding: 8px 10px;
-  border-radius: var(--bh-radius);
+  border-radius: 6px;
   word-break: break-word;
 }
 
 .bh-popup__meta {
   margin: 0;
   font-size: 11px;
-  color: var(--bh-fg-subtle);
+  color: var(--bh-muted);
 }
 
 .bh-popup__meta code {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
-  font-size: 11px;
-  color: var(--bh-fg-muted);
-  background: #f1f5f9;
-  padding: 1px 4px;
-  border-radius: 4px;
+  font-family: var(--bh-mono);
+  font-size: 10px;
+  color: var(--bh-ink2);
+  background: var(--bh-indigo-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
 }
+
+/* ── Actions ─────────────────────────────────────── */
 
 .bh-popup__actions {
   display: flex;
@@ -167,46 +199,52 @@ body {
 
 .bh-popup__btn {
   appearance: none;
-  border: 1px solid var(--bh-border);
-  background: #fff;
-  color: var(--bh-fg);
-  padding: 8px 10px;
-  font: inherit;
+  border: 1px solid var(--bh-line);
+  background: var(--bh-surface);
+  color: var(--bh-ink);
+  padding: 8px 14px;
+  font-family: var(--bh-sans);
   font-size: 12px;
-  border-radius: var(--bh-radius);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border-radius: 999px;
   cursor: pointer;
-  transition:
-    background-color 120ms ease,
-    border-color 120ms ease,
-    transform 80ms ease;
+  transition: transform 80ms ease, box-shadow 80ms ease, border-color 80ms ease;
+  text-align: center;
 }
 
 .bh-popup__btn:hover {
-  background: #f8fafc;
+  border-color: var(--bh-indigo);
+  transform: translateY(-1px);
 }
 
-.bh-popup__btn:active {
-  transform: translateY(1px);
-}
+.bh-popup__btn:active { transform: translateY(0); }
 
 .bh-popup__btn:focus-visible {
-  outline: 2px solid var(--bh-accent);
+  outline: 2px solid var(--bh-indigo);
   outline-offset: 2px;
 }
 
 .bh-popup__btn--primary {
-  background: var(--bh-accent);
+  background: var(--bh-indigo);
   color: #fff;
-  border-color: var(--bh-accent);
+  border-color: var(--bh-indigo);
+  box-shadow: 0 6px 20px -10px var(--bh-indigo);
 }
 
 .bh-popup__btn--primary:hover {
-  background: #312e81;
+  box-shadow: 0 10px 24px -10px var(--bh-indigo);
 }
+
+/* ── Footer ──────────────────────────────────────── */
 
 .bh-popup__footer {
   padding: 8px 16px 12px;
+  font-family: var(--bh-mono);
   font-size: 10px;
-  color: var(--bh-fg-subtle);
+  letter-spacing: 0.04em;
+  color: var(--bh-muted);
   text-align: right;
+  border-top: 1px solid var(--bh-line);
+  margin-top: 8px;
 }

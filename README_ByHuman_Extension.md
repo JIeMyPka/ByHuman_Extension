@@ -2,7 +2,7 @@
 
 ByHuman Chrome Extension is an early Manifest V3 browser extension for capturing observable writing effort on supported publishing platforms.
 
-The current version focuses on X/Twitter composer tracking. It detects how text is entered into the composer, including typed and pasted input, and sends composition metadata to the ByHuman backend to generate verifiable writing receipts.
+It detects how text is entered into composers across supported platforms — typed vs pasted input, edits, deletions — and sends composition metadata to the ByHuman backend to generate verifiable writing receipts.
 
 ## Current version
 
@@ -33,21 +33,23 @@ If the extension was already loaded and you changed files inside `dist/`, click 
 
 ## What it does
 
-- Detects X/Twitter composer activity
-- Tracks typed vs pasted writing behavior
-- Connects to the ByHuman backend API
-- Supports receipt creation for online posts
+- Detects composer activity on supported platforms
+- Tracks typed vs pasted writing behavior per session
+- Connects to the ByHuman backend API to generate signed receipts
 - Includes a popup UI for extension status
 - Works as an unpacked Chrome extension during development
 
 ## Supported websites
 
-Current supported targets:
-
 ```text
 https://x.com/*
 https://twitter.com/*
+https://mail.google.com/*
 ```
+
+**X / Twitter** — intercepts the `CreateTweet` network call to auto-submit a receipt when a tweet is published. A floating indicator shows live typing/paste stats during composition.
+
+**Gmail** — attaches to the compose window body. Submits a private receipt when the Send button is clicked. Supports multiple compose windows open simultaneously. Receipts default to `PRIVATE` visibility.
 
 ## Repository structure
 
@@ -180,7 +182,7 @@ npm run dev
 npm run dev
 ```
 
-Then open `chrome://extensions`, load the `dist/` folder, and test the extension on X/Twitter.
+Then open `chrome://extensions`, load the `dist/` folder, and test the extension on X/Twitter or Gmail.
 
 ## Production build
 
@@ -213,11 +215,11 @@ This is an early MVP extension.
 
 Current focus:
 
-- Improve X/Twitter capture reliability
-- Connect publishing flow to ByHuman receipts
+- Gmail and X/Twitter composer tracking live
+- Improve capture reliability across both platforms
 - Improve login/session handling
-- Prepare the extension for user testing
-- Add clearer receipt and verification states
+- Prepare for user testing
+- Add clearer receipt and verification states in the popup
 
 ## License
 

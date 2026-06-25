@@ -88,18 +88,16 @@ const copyStatic = () => {
   try {
     if (watch) {
       copyStatic();
-      console.log("[build] starting watch for popup + content + interceptor...");
+      console.log("[build] starting watch for popup + content + interceptor + gmail...");
       runVite("popup", undefined).catch((e) => console.error(e));
-      runVite("content", "vite.content.config.ts").catch((e) =>
-        console.error(e),
-      );
-      runVite("interceptor", "vite.interceptor.config.ts").catch((e) =>
-        console.error(e),
-      );
+      runVite("content", "vite.content.config.ts").catch((e) => console.error(e));
+      runVite("interceptor", "vite.interceptor.config.ts").catch((e) => console.error(e));
+      runVite("gmail", "vite.gmail.config.ts").catch((e) => console.error(e));
     } else {
       await runVite("popup", undefined);
       await runVite("content", "vite.content.config.ts");
       await runVite("interceptor", "vite.interceptor.config.ts");
+      await runVite("gmail", "vite.gmail.config.ts");
       copyStatic();
       console.log("[build] done. Load extension/dist as unpacked in Chrome.");
     }

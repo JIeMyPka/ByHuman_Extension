@@ -26,12 +26,19 @@
     "https://twitter.com/*",
     "https://x.com/*",
     "https://*.twitter.com/*",
-    "https://*.x.com/*"
+    "https://*.x.com/*",
+    "https://mail.google.com/*"
   ],
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*", "https://x.com/*"],
       "js": ["content/twitterContent.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    },
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content/gmailContent.js"],
       "run_at": "document_idle",
       "all_frames": false
     }

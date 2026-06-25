@@ -15,7 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@shared": resolve(__dirname, "src/shared"),
-      "@core": resolve(__dirname, "../src"),
+      "@core": resolve(__dirname, "node_modules/@byhuman/provenance-core/src"),
     },
   },
   build: {

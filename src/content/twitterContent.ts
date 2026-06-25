@@ -33,7 +33,7 @@
  * receipts, never the text. See src/app/api/posts/route.ts.
  */
 
-import { ProvenanceTracker, type ChangeHint } from "@core/domain/provenance/tracker";
+import { ProvenanceTracker, type ChangeHint } from "@core/tracker";
 import { POSTS_URL } from "@shared/config";
 
 // ── Inject the page-world interceptor ─────────────────────────────────────

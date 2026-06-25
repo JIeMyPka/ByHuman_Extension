@@ -24,6 +24,7 @@
 
 import { ProvenanceTracker, type ChangeHint } from "@core/tracker";
 import { POSTS_URL } from "@shared/config";
+import { createIndicator, positionIndicator, setIndicatorState, renderStats } from "@shared/indicator";
 
 // ── Selectors ─────────────────────────────────────────────────────────────
 
@@ -73,84 +74,14 @@ function readBodyText(body: HTMLElement): string {
   return (body.textContent ?? "").replace(/[​‌‍﻿]/g, "");
 }
 
-// ── Indicator UI ──────────────────────────────────────────────────────────
-
-function createIndicator(): HTMLDivElement {
-  const el = document.createElement("div");
-  el.setAttribute("data-byhuman", "indicator");
-  Object.assign(el.style, {
-    position: "fixed",
-    zIndex: "2147483646",
-    minWidth: "210px",
-    maxWidth: "270px",
-    padding: "8px 10px",
-    background: "rgba(15, 23, 42, 0.92)",
-    color: "#f8fafc",
-    fontFamily: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-    fontSize: "11px",
-    lineHeight: "1.4",
-    borderRadius: "10px",
-    boxShadow: "0 4px 14px rgba(15, 23, 42, 0.25)",
-    pointerEvents: "none",
-    userSelect: "none",
-    opacity: "0.85",
-  } as CSSStyleDeclaration);
-
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-      <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;background:#6366f1;color:#fff;font-size:9px;font-weight:700;">bh</span>
-      <span style="font-weight:600;letter-spacing:0.02em;">ByHuman</span>
-      <span data-bh-state style="margin-left:auto;font-size:10px;color:#fbbf24;">idle</span>
-    </div>
-    <div data-bh-stats style="font-variant-numeric:tabular-nums;color:#cbd5f5;">Start typing to begin a session.</div>
-  `;
-  return el;
-}
-
-function positionIndicator(el: HTMLElement, anchor: HTMLElement): void {
-  const rect = anchor.getBoundingClientRect();
-  const margin = 8;
-  const iw = el.getBoundingClientRect().width || 220;
-  const spaceRight = window.innerWidth - rect.right;
-  if (spaceRight >= iw + margin * 2) {
-    el.style.top = `${Math.max(margin, rect.top)}px`;
-    el.style.left = `${rect.right + margin}px`;
-  } else {
-    el.style.top = `${rect.bottom + margin}px`;
-    el.style.left = `${Math.max(margin, rect.left)}px`;
-  }
-}
-
-function setIndicatorState(el: HTMLElement, msg: string, color: string): void {
-  const s = el.querySelector<HTMLElement>("[data-bh-state]");
-  if (s) { s.textContent = msg; s.style.color = color; }
-}
-
-function renderStats(el: HTMLElement, snap: ReturnType<ProvenanceTracker["snapshot"]>): void {
-  const target = el.querySelector<HTMLElement>("[data-bh-stats]");
-  if (!target) return;
-  const s = snap.sessionStats;
-  const verdictColor =
-    snap.verdict === "Mostly typed"  ? "#34d399" :
-    snap.verdict === "Mostly pasted" ? "#fb7185" :
-    snap.verdict === "Mixed"         ? "#fbbf24" : "#94a3b8";
-  const largeBadge = s.largePasteEvents > 0
-    ? ` <span style="color:#fbbf24;">(${s.largePasteEvents} large)</span>`
-    : "";
-  target.innerHTML = `
-    <div>Typed: <strong>${s.typedChars}</strong></div>
-    <div>Pasted: <strong>${s.pastedChars}</strong>${largeBadge}</div>
-    <div>Deleted: <strong>${s.deletedChars}</strong></div>
-    <div style="margin-top:4px;color:${verdictColor};font-weight:600;">${snap.verdict}</div>
-  `;
-}
+// Indicator UI is provided by @shared/indicator
 
 // ── Receipt submission ────────────────────────────────────────────────────
 
 async function submitReceipt(state: AttachedCompose): Promise<void> {
   if (!state.tracker) return;
   const snapshot = state.tracker.snapshot();
-  setIndicatorState(state.indicator, "saving…", "#fbbf24");
+  setIndicatorState(state.indicator, "saving…", "saving");
 
   try {
     const res = await fetch(POSTS_URL, {
@@ -169,15 +100,15 @@ async function submitReceipt(state: AttachedCompose): Promise<void> {
     });
 
     if (res.status === 401) {
-      setIndicatorState(state.indicator, "sign in to save", "#fbbf24");
+      setIndicatorState(state.indicator, "sign in to save", "warn");
       return;
     }
     if (!res.ok) {
-      setIndicatorState(state.indicator, "save failed", "#fb7185");
+      setIndicatorState(state.indicator, "save failed", "error");
       return;
     }
 
-    setIndicatorState(state.indicator, "saved ✓", "#34d399");
+    setIndicatorState(state.indicator, "saved ✓", "ok");
     state.tracker = null;
     state.lastSeenText = "";
     state.startedAt = 0;
@@ -250,7 +181,7 @@ function attachToBody(body: HTMLElement): void {
     state.tracker = new ProvenanceTracker(initial);
     state.lastSeenText = initial;
     state.startedAt = Date.now();
-    setIndicatorState(indicator, "tracking", "#34d399");
+    setIndicatorState(indicator, "tracking", "active");
     renderStats(indicator, state.tracker.snapshot());
   };
 

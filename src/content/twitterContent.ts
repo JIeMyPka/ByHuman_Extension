@@ -35,6 +35,7 @@
 
 import { ProvenanceTracker, type ChangeHint } from "@core/tracker";
 import { POSTS_URL } from "@shared/config";
+import { createIndicator, positionIndicator, setIndicatorState, renderStats } from "@shared/indicator";
 
 // ── Inject the page-world interceptor ─────────────────────────────────────
 
@@ -120,7 +121,7 @@ function attachToComposer(composer: HTMLElement): void {
     state.tracker = new ProvenanceTracker(initial);
     state.lastSeenText = initial;
     state.startedAt = Date.now();
-    setIndicatorActive(indicator, true);
+    setIndicatorState(indicator, "tracking", "active");
     renderStats(indicator, state.tracker.snapshot());
   };
 
@@ -196,101 +197,7 @@ function detachComposer(composer: HTMLElement): void {
   attachedNodes.delete(composer);
 }
 
-// ── Indicator UI ──────────────────────────────────────────────────────────
-
-function createIndicator(): HTMLDivElement {
-  const el = document.createElement("div");
-  el.className = "byhuman-indicator";
-  el.setAttribute("data-byhuman", "indicator");
-  Object.assign(el.style, {
-    position: "fixed",
-    zIndex: "2147483646",
-    minWidth: "210px",
-    maxWidth: "270px",
-    padding: "8px 10px",
-    background: "rgba(15, 23, 42, 0.92)",
-    color: "#f8fafc",
-    fontFamily: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-    fontSize: "11px",
-    lineHeight: "1.4",
-    borderRadius: "10px",
-    boxShadow: "0 4px 14px rgba(15, 23, 42, 0.25)",
-    pointerEvents: "none",
-    userSelect: "none",
-    transition: "opacity 120ms ease",
-    opacity: "0.85",
-  } as CSSStyleDeclaration);
-
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-      <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;background:#6366f1;color:#fff;font-size:9px;font-weight:700;">bh</span>
-      <span style="font-weight:600;letter-spacing:0.02em;">ByHuman</span>
-      <span data-bh-state style="margin-left:auto;font-size:10px;color:#fbbf24;">idle</span>
-    </div>
-    <div data-bh-stats style="font-variant-numeric:tabular-nums;color:#cbd5f5;">Start typing or pasting to begin a session.</div>
-  `;
-  return el;
-}
-
-function setIndicatorActive(el: HTMLElement, active: boolean): void {
-  const state = el.querySelector<HTMLElement>("[data-bh-state]");
-  if (!state) return;
-  state.textContent = active ? "tracking" : "idle";
-  state.style.color = active ? "#34d399" : "#fbbf24";
-}
-
-function setIndicatorMessage(el: HTMLElement, msg: string, color: string): void {
-  const state = el.querySelector<HTMLElement>("[data-bh-state]");
-  if (state) {
-    state.textContent = msg;
-    state.style.color = color;
-  }
-}
-
-function renderStats(
-  el: HTMLElement,
-  snapshot: ReturnType<ProvenanceTracker["snapshot"]>,
-): void {
-  const target = el.querySelector<HTMLElement>("[data-bh-stats]");
-  if (!target) return;
-  const s = snapshot.sessionStats;
-  const verdictColor = verdictTone(snapshot.verdict);
-  const largeBadge =
-    s.largePasteEvents > 0
-      ? ` <span style="color:#fbbf24;">(${s.largePasteEvents} large)</span>`
-      : "";
-  target.innerHTML = `
-    <div>Typed: <strong>${s.typedChars}</strong></div>
-    <div>Pasted: <strong>${s.pastedChars}</strong>${largeBadge}</div>
-    <div>Deleted: <strong>${s.deletedChars}</strong> <span style="color:#94a3b8;">(${s.deleteEvents} ev)</span></div>
-    <div>Total now: <strong>${s.totalChars}</strong></div>
-    <div style="margin-top:4px;color:${verdictColor};font-weight:600;">${snapshot.verdict}</div>
-  `;
-}
-
-function verdictTone(verdict: string): string {
-  if (verdict === "Mostly typed") return "#34d399";
-  if (verdict === "Mostly pasted") return "#fb7185";
-  if (verdict === "Mixed") return "#fbbf24";
-  return "#94a3b8";
-}
-
-function positionIndicator(el: HTMLElement, composer: HTMLElement): void {
-  const rect = composer.getBoundingClientRect();
-  const margin = 8;
-  const indicatorRect = el.getBoundingClientRect();
-  const spaceRight = window.innerWidth - rect.right;
-  if (spaceRight >= indicatorRect.width + margin * 2) {
-    el.style.top = `${Math.max(margin, rect.top)}px`;
-    el.style.left = `${rect.right + margin}px`;
-  } else {
-    el.style.top = `${Math.min(
-      window.innerHeight - indicatorRect.height - margin,
-      rect.bottom + margin,
-    )}px`;
-    el.style.left = `${Math.max(margin, rect.left)}px`;
-  }
-}
+// Indicator UI is provided by @shared/indicator
 
 // ── Receipt submission ────────────────────────────────────────────────────
 
@@ -333,7 +240,7 @@ async function submitReceipt(
   const snapshot = state.tracker.snapshot();
   const tweetUrl = `https://x.com/i/web/status/${tweetId}`;
 
-  setIndicatorMessage(state.indicator, "saving…", "#fbbf24");
+  setIndicatorState(state.indicator, "saving…", "saving");
 
   try {
     const res = await fetch(POSTS_URL, {
@@ -353,15 +260,15 @@ async function submitReceipt(
     });
 
     if (res.status === 401) {
-      setIndicatorMessage(state.indicator, "sign in to save", "#fbbf24");
+      setIndicatorState(state.indicator, "sign in to save", "warn");
       return;
     }
     if (!res.ok) {
-      setIndicatorMessage(state.indicator, "save failed", "#fb7185");
+      setIndicatorState(state.indicator, "save failed", "error");
       return;
     }
 
-    setIndicatorMessage(state.indicator, "saved ✓", "#34d399");
+    setIndicatorState(state.indicator, "saved ✓", "ok");
 
     // Reset the tracker so the next tweet starts a fresh session.
     state.tracker = null;

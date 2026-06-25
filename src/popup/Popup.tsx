@@ -40,13 +40,10 @@ export function Popup() {
     return (
         <div className="bh-popup">
             <header className="bh-popup__header">
-                <span className="bh-popup__logo" aria-hidden="true">bh</span>
-                <div>
-                    <h1 className="bh-popup__title">ByHuman</h1>
-                    <p className="bh-popup__subtitle">
-                        Proof of observable effort for online writing
-                    </p>
+                <div className="bh-popup__wordmark" aria-label="by:human">
+                    <span className="bh-popup__wm-bracket">[</span><span className="bh-popup__wm-by">by</span><span className="bh-popup__wm-colon">:</span><span className="bh-popup__wm-human">human</span><span className="bh-popup__wm-bracket">]</span>
                 </div>
+                <p className="bh-popup__subtitle">Writing receipts for the AI era.</p>
             </header>
 
             <main className="bh-popup__main">
@@ -68,7 +65,7 @@ export function Popup() {
                                 <><br /><span className="bh-popup__email">{auth.user.email}</span></>
                             ) : null}
                         </p>
-                        <p className="bh-popup__hint">Ready for X / Twitter.</p>
+                        <p className="bh-popup__hint">Ready on X / Twitter and Gmail.</p>
                         <div className="bh-popup__actions">
                             <button type="button" className="bh-popup__btn bh-popup__btn--primary"
                                     onClick={() => openInNewTab(TWITTER_URL)}>
